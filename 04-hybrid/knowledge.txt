@@ -1,0 +1,11 @@
+工具循环是怎么转的。对面只会聊天，决定说人话还是点名调函数。每一圈 create 只能二选一：返回 tool_calls 就还没说完，你执行工具再开下一圈；返回人话就打印后 break。
+
+for 循环最多 5 圈。顺序必须是：请求，append 模型这条 message，如果没有 tool_calls 就打印人话并 break，如果有就执行函数并 append role=tool。
+
+if not message.tool_calls 才是它在说人话。写成 if message.tool_calls 然后 break，会在它要点工具时退出，函数永远不跑。tool_call_id 必须用模型给的 id，不要自己编。
+
+路径等于磁盘哪一格。写错一格 exists 为假，你会看到函数返回的「文件不存在」，说明已经调到 read_note 了。os.path.exists 判断的是完整 path，文件夹没有也算找不到。
+
+os.path.abspath 补成带盘符的完整地址，不检查文件在不在。打印它对照资源管理器。dirname 去掉脚本文件名只留文件夹。join 用来拼斜杠。
+
+如果模型不停地点名调工具，程序会转个没完。所以要设一个上限，转满就停，避免卡死。这和写死循环次数是同一件事，只是这里不出现 range 这个单词。
